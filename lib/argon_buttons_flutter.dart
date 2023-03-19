@@ -171,31 +171,28 @@ class _ArgonButtonState extends State<ArgonButton>
                   widget.borderRadius, widget.height / 2, _animation.value)!
               : widget.borderRadius),
         ),
-        child: RaisedButton(
-            key: _buttonKey,
-            color: widget.color,
-            focusColor: widget.focusColor,
-            hoverColor: widget.hoverColor,
-            highlightColor: widget.highlightColor,
-            splashColor: widget.splashColor,
-            colorBrightness: widget.colorBrightness,
+        child: ElevatedButton(
+          key: _buttonKey,
+          onPressed: () {
+            widget.onTap!(
+                  () => animateForward(),
+                  () => animateReverse(),
+              btn,
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: widget.color,
+            foregroundColor: widget.disabledTextColor,
+            disabledForegroundColor: widget.disabledColor,
             elevation: widget.elevation,
-            focusElevation: widget.focusElevation,
-            hoverElevation: widget.hoverElevation,
-            highlightElevation: widget.highlightElevation,
+            shadowColor: widget.highlightColor,
             padding: widget.padding,
-            clipBehavior: widget.clipBehavior,
-            focusNode: widget.focusNode,
-            materialTapTargetSize: widget.materialTapTargetSize,
-            disabledElevation: widget.disabledElevation,
-            disabledColor: widget.disabledColor,
-            disabledTextColor: widget.disabledTextColor,
-            onPressed: () {
-              widget.onTap!(
-                  () => animateForward(), () => animateReverse(), btn);
-              // btnClicked();
-            },
-            child: btn == ButtonState.Idle ? widget.child : widget.loader),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: btn == ButtonState.Idle ? widget.child : widget.loader,
+        )
       ),
     );
   }
@@ -406,37 +403,34 @@ class _ArgonTimerButtonState extends State<ArgonTimerButton>
                   widget.borderRadius, widget.height / 2, _animation.value)!
               : widget.borderRadius),
         ),
-        child: RaisedButton(
-            color: widget.color,
-            focusColor: widget.focusColor,
-            hoverColor: widget.hoverColor,
-            highlightColor: widget.highlightColor,
-            splashColor: widget.splashColor,
-            colorBrightness: widget.colorBrightness,
+        child: ElevatedButton(
+          onPressed: () {
+            widget.onTap!((newCounter) => startTimer(newCounter), btn);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: widget.color,
+            foregroundColor: widget.disabledTextColor,
+            disabledForegroundColor: widget.disabledColor,
             elevation: widget.elevation,
-            focusElevation: widget.focusElevation,
-            hoverElevation: widget.hoverElevation,
-            highlightElevation: widget.highlightElevation,
             padding: widget.padding,
-            clipBehavior: widget.clipBehavior,
-            focusNode: widget.focusNode,
-            materialTapTargetSize: widget.materialTapTargetSize,
-            disabledElevation: widget.disabledElevation,
-            disabledColor: widget.disabledColor,
-            disabledTextColor: widget.disabledTextColor,
-            onPressed: () {
-              widget.onTap!((newCounter) => startTimer(newCounter), btn);
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            tapTargetSize: widget.materialTapTargetSize,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          child: btn == ButtonState.Idle
+              ? widget.child
+              : StreamBuilder(
+            stream: emptyStream,
+            builder: (context, snapshot) {
+              if (secondsLeft == 0) {
+                animateReverse();
+              }
+              return widget.loader!(secondsLeft);
             },
-            child: btn == ButtonState.Idle
-                ? widget.child
-                : StreamBuilder(
-                    stream: emptyStream,
-                    builder: (context, snapshot) {
-                      if (secondsLeft == 0) {
-                        animateReverse();
-                      }
-                      return widget.loader!(secondsLeft);
-                    })),
+          ),
+        )
       ),
     );
   }
